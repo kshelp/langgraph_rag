@@ -3,3 +3,4 @@
 
 __pycache__/
 *.pyc
+src/*/faiss_index/
