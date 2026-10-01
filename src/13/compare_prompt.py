@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 from dotenv import load_dotenv
@@ -11,7 +12,8 @@ RETRIEVER_DIR = os.path.join(CURRENT_DIR, "..", "11")
 sys.path.append(RETRIEVER_DIR)
 
 from retriever import search, build_context
-from prompts import PROMPTS
+from prompts import RAG_PROMPT_V3
+from validators import check_citation
 
 load_dotenv()
 
@@ -20,26 +22,56 @@ llm = ChatOpenAI(
     temperature=0
 )
 
-def compare(question):
+_chain = RAG_PROMPT_V3 | llm | StrOutputParser()
 
-    documents = search(question)
+NO_INFO = "자료에서 확인할 수 없습니다"
+
+def ask(question, k=3, verbose=True):
+    documents = search(question, k=k)
+
+    if verbose:
+        print("Q:", question)
+
+    if not documents:
+        result = {
+            "answer": "관련 자료를 찾지 못했습니다.",
+            "sources": [],
+            "cited": False,
+            "insufficient": True
+        }
+
+        if verbose:
+            print("A:", result["answer"])
+            print("⚠️ 검색 결과 없음")
+            print("-" * 55)
+
+        return result
+
     context = build_context(documents)
 
-    print("=" * 60)
-    print("Q:", question)
-    print("근거:", len(documents), "개")
-    print("-" * 60)
-    
-    for name, prompt in PROMPTS.items():
-        chain = prompt | llm | StrOutputParser()
-        answer = chain.invoke({
-            "context": context,
-            "question": question
-        })
-        print()
-        print(f"[{name}]")
-        print(answer)        
+    answer = _chain.invoke({
+        "context": context,
+        "question": question
+    })
+
+    cited, citation_message = check_citation(
+        answer,
+        len(documents)
+    )
+
+    sources = []
+
+    for document in documents:
+        sources.append(document.metadata)
+
+    return {
+        "answer": answer,
+        "sources": sources,
+        "cited": cited,
+        "insufficient": NO_INFO in answer
+    }
 
 if __name__ == "__main__":
-    compare("환불 신청 방법과 수수료를 알려주세요")
-
+    ask("환불은 며칠 이내에 신청해야 하나요?")
+    ask("대표이사가 누구인가요?")
+    ask("환불 방법과 수수료를 알려주세요")
