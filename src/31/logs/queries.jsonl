@@ -1,0 +1,6 @@
+{"time": "2026-09-24 13:58:05", "question": "안녕하세요", "intent": "greeting", "grade": "pass", "retries": 0, "rewrites": 0, "node_error": "", "elapsed": 0.01}
+{"time": "2026-09-24 13:58:05", "question": "10 + 20", "intent": "calc", "grade": "pass", "retries": 0, "rewrites": 0, "node_error": "", "elapsed": 0.0}
+{"time": "2026-09-24 13:58:05", "question": "오늘 날씨 어때요?", "intent": "scope", "grade": "pass", "retries": 0, "rewrites": 0, "node_error": "", "elapsed": 0.0}
+{"time": "2026-09-24 13:58:11", "question": "환불은 며칠 이내에 신청해야 하나요?", "intent": "document", "grade": "pass", "retries": 0, "rewrites": 0, "node_error": "", "elapsed": 6.69}
+{"time": "2026-09-24 13:58:15", "question": "대표이사가 누구인가요?", "intent": "document", "grade": "giveup", "retries": 0, "rewrites": 2, "node_error": "", "elapsed": 3.41}
+{"time": "2026-09-24 14:00:12", "question": "환불은 며칠 이내인가요?", "intent": "document", "grade": "giveup", "retries": 0, "rewrites": 0, "node_error": "", "elapsed": 1.16}
