@@ -20,8 +20,13 @@ SRC_DIR = os.path.abspath(
     os.path.join(CURRENT_DIR, "..")
 )
 
-# src 폴더에서 config와 rag_app을 찾을 수 있도록 등록합니다.
+# rag_app 내부 모듈은 서로를 `import cache`, `import config`처럼 불러오므로
+# src/rag_app 폴더도 등록합니다. (src/24/config.py보다 먼저 찾도록 맨 앞에 둡니다.)
+RAG_APP_DIR = os.path.join(SRC_DIR, "rag_app")
+
+# src 폴더에서 rag_app 패키지를 찾을 수 있도록 등록합니다.
 sys.path.insert(0, SRC_DIR)
+sys.path.insert(0, RAG_APP_DIR)
 
 # 불필요한 경고 메시지를 숨깁니다.
 warnings.filterwarnings("ignore")
